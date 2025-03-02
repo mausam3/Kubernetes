@@ -64,10 +64,6 @@ resource "google_container_cluster" "primary" {
   # Network and Subnet configuration
   network    = var.vpc_network
   subnetwork = var.subnet_name
-  enable_network_policy = true
-
-  ip_allocation_policy {
-    use_ip_aliases = true  # Enable IP aliasing for pod networking
   }
 
   # Node pool configuration
