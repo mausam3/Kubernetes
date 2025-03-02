@@ -1,31 +1,43 @@
 terraform {
   required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "3.52.0"
+    }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.0.1"
     }
   }
 }
 
-variable "host" {
-  type = string
+data "terraform_remote_state" "gke" {
+  backend = "local"
+
+  config = {
+    path = "../learn-terraform-provision-gke-cluster/terraform.tfstate"
+  }
 }
 
-variable "client_certificate" {
-  type = string
+# Retrieve GKE cluster information
+provider "google" {
+  project = data.terraform_remote_state.gke.outputs.project_id
+  region  = data.terraform_remote_state.gke.outputs.region
 }
 
-variable "client_key" {
-  type = string
-}
+# Configure kubernetes provider with Oauth2 access token.
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/client_config
+# This fetches a new token, which will expire in 1 hour.
+data "google_client_config" "default" {}
 
-variable "cluster_ca_certificate" {
-  type = string
+data "google_container_cluster" "my_cluster" {
+  name     = data.terraform_remote_state.gke.outputs.kubernetes_cluster_name
+  location = data.terraform_remote_state.gke.outputs.region
 }
 
 provider "kubernetes" {
-  host = var.host
+  host = data.terraform_remote_state.gke.outputs.kubernetes_cluster_host
 
-  client_certificate     = base64decode(var.client_certificate)
-  client_key             = base64decode(var.client_key)
-  cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(data.google_container_cluster.my_cluster.master_auth[0].cluster_ca_certificate)
 }
