@@ -64,10 +64,6 @@ resource "google_container_cluster" "primary" {
   # Network and Subnet configuration
   network    = var.vpc_network
   subnetwork = var.subnet_name
-
-  # Enable logging and monitoring
-  enable_logging        = true
-  enable_monitoring     = true
   enable_network_policy = true
 
   ip_allocation_policy {
