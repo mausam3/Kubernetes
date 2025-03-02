@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "nginx" {
           name  = "example"
 
           port {
-            container_port = 80
+            container_port = 8000
           }
 
           resources {
