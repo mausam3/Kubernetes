@@ -65,17 +65,6 @@ resource "google_container_cluster" "primary" {
   network    = var.vpc_network
   subnetwork = var.subnet_name
   }
-
-    autoscaling {
-      min_node_count = 1
-      max_node_count = 5
-    }
-
-    management {
-      auto_upgrade = true
-      auto_repair  = true
-    }
-  }
 }
 
 # Output the kubeconfig for accessing the GKE cluster
