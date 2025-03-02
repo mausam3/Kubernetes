@@ -66,7 +66,3 @@ resource "google_container_cluster" "primary" {
   subnetwork = var.subnet_name
   }
 
-# Output the kubeconfig for accessing the GKE cluster
-output "kubeconfig" {
-  value = google_container_cluster.primary.kube_config[0].raw_kube_config
-}
