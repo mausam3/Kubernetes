@@ -49,7 +49,7 @@ variable "subnet_name" {
 # Create the GKE cluster
 resource "google_container_cluster" "primary" {
   name     = my-cluster
-  location = "us-central1-c"
+  location = var.region
 
   initial_node_count = 3
   node_version       = "latest"  # You can specify the exact version if you want
