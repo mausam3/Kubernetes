@@ -66,10 +66,6 @@ resource "google_container_cluster" "primary" {
   subnetwork = var.subnet_name
   }
 
-  # Node pool configuration
-  node_pool {
-    name = var.node_pool_name
-
     autoscaling {
       min_node_count = 1
       max_node_count = 5
